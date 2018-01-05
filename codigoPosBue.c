@@ -1,5 +1,5 @@
-//Acesso por voz no arduino (Bluetooth + Android) criado por Angelo Casimiro (4/27/14) e modificado por nós com autorização do Autor.
-
+﻿//Acesso por voz no arduino (Bluetooth + Android) criado por Angelo Casimiro (4/27/14) e modificado por nós com autorização do Autor.
+//batata
   #include <LiquidCrystal.h>
   #include <EEPROM.h>
   #include <SD.h>
