@@ -1,5 +1,5 @@
 ﻿//Acesso por voz no arduino (Bluetooth + Android) criado por Angelo Casimiro (4/27/14) e modificado por nós com autorização do Autor.
-//batata
+
   #include <LiquidCrystal.h>
   #include <EEPROM.h>
   #include <SD.h>
@@ -54,228 +54,6 @@
   int usuIdade = 23;
   String usuSexo = "M";
 
-  void setup() { // Trá lá lá lá lá lá lá lá lá
-    
-    pinMode(blinkPin,OUTPUT);         // LED verde
-    pinMode(fadePin,OUTPUT);          // LED amarelo
-    Serial.begin(115200);             // we agree to talk fast!
-    interruptSetup();                 // sets up to read Pulse Sensor signal every 2mS
-                  // IF YOU ARE POWERING The Pulse Sensor AT VOLTAGE LESS THAN THE BOARD VOLTAGE,
-                  // UN-COMMENT THE NEXT LINE AND APPLY THAT VOLTAGE TO THE A-REF PIN
-                  //   analogReference(EXTERNAL);
-    //BT.begin(115200);
-  //Ligando o Aparelho
-    Serial.println("Olá. Sou C.O.X.I.N.H.A. seu assitente médico pessoal");
-    Serial.println("Que coisa incrível vamos fazer hoje?");
-
-  }
-
-
-  //  É aqui que a mágica acontece
-  void loop() {
-     serialOutput();
-
-    /*if(batata){
-      EEPROM.write(0,(meGrave/256));
-      EEPROM.write(1,(meGrave%256));
-      Serial.print("Carregando memória");
-      Serial.print(".");delay(1000);
-      Serial.print(".");delay(1000);
-      Serial.print(".");delay(1000);
-      Serial.print(".");delay(1000);
-      Serial.print(".");delay(1000);
-      Serial.print(".");delay(1000);
-      Serial.print(".");delay(1000);
-      Serial.println();
-
-      int num1 = EEPROM.read(0);
-      int num2 = EEPROM.read(1);
-      num1 = num1 * 256;
-      num1 = num1 + num2;
-
-      Serial.print("Valor esperado: ");
-      Serial.print(meGrave);
-      Serial.print("Valor gravado: ");
-      Serial.println(num1);
-      batata = false;
-    }*/
-
-    String textin = "";
-    Serial.println("Zero - Abrir histórico de saúde");
-    Serial.println("Um - Verificar batimentos cardiacos");
-    Serial.println("Dois - Medir Glicose no sangue");
-  /*while(true){
-    
-    if(Serial.available() > 0){
-      textin = "";
-      char letrin;
-      while(Serial.available() > 0){
-        letrin = Serial.read();
-        if(letrin != '\n'){
-          textin.concat(letrin);
-        }
-        delay(10);
-      }
-
-    }
-    /**while(BT.available()){
-      char r = BT.read();
-      Serial.print(r);
-      
-    }*/
-
-        Serial.println("Recebido >"+textin+"<");
-
-        if(textin == "Zero"||textin == "zero"){
-            Serial.println("FATAL ERROR");
-            //verificarHistoricoDeMedicoes();
-        }else if(textin == "Um"||textin == "um"||textin == "*um#"){
-            Serial.println("Vamos ver se esse tumtumzinho está firme e forte.");
-            medirBatimentosCardiacos();
-        }else if(textin == "Dois"||textin == "dois"){
-            Serial.println("Será que sua glicose aumentou? Será que ela caiu?");
-            medirFalsamenteGlicoseDoSangue();
-        }else
-            Serial.println("Me desculpe, não compreendo o que deseja fazer.");
-  }
-  
-  while(Serial.available() > 0){
-    textin = Serial.read();
-    if(Serial.read() == '\n'){
-      if(textin == "Zero"||textin == "zero"){
-        Serial.println("FATAL ERROR");
-        //verificarHistoricoDeMedicoes();
-      }else if(textin == "Um"||textin == "um"||textin == "*um#"){
-        Serial.println("Vamos ver se esse tumtumzinho está firme e forte.");
-        medirBatimentosCardiacos();
-      }else if(textin == "Dois"||textin == "dois"){
-        Serial.println("Será que sua glicose aumentou? Será que ela caiu?");
-        medirFalsamenteGlicoseDoSangue();
-      }else
-        Serial.println("Me desculpe, não compreendo o que deseja fazer.");
-    }
-  }
-       
-  }
-
-  /*void verificarHistoricoDeMedicoes(){
-    Serial.println("Que vamos analisar hoje?");
-    Serial.println("00 - Batimentos Cardíacos");
-    Serial.println("01 - Glicose");
-    Serial.println("02 - Nada");
-    
-    String textin = "";
-    boolean escolha = true;
-    while(escolha){
-    if(Serial.available() > 0){
-            textin = "";
-            char letrin;
-
-            while(Serial.available() > 0){
-                letrin = Serial.read();
-                if(letrin != '\n'){
-                    textin.concat(letrin);
-                }
-                delay(10);
-            }
-
-        }
-    
-    if(textin == "00"){
-            Serial.println("Bora lá");
-            historicoDeMedicoes('B');
-        }else if(textin == "01"){
-            Serial.println("Vamo que vamo");
-            historicoDeMedicoes('G');
-        }else if(textin == "02"){
-            Serial.println("Vlw flw");
-      escolha = false;
-        }else
-            Serial.println("Qué qui tú qué?");
-    
-      
-    }
-    
-  }*/
-  
-  /*void historicoDeMedicoes(char GliBPM){
-    String arqNome = ("Gli"+usuNome+".txt");
-    chamarArquivo(arqNome);
-    
-    desinvocarArquivo();
-  }*/
-  
-  
-  void medirBatimentosCardiacos(){
-      int tempoDeEspera = 30 * 1000;
-      long inicio; int medicoes = 0; int valores = 0;
-    int BPMtemp = 0;
-
-      Serial.println("");
-      Serial.println("Por favor, encoste o dedo no medidor e aguarde 30 segundos");
-
-      inicio = millis();
-      while(millis() - inicio < tempoDeEspera){
-
-          if(millis() - inicio > 1000){
-
-          }
-          if (QS == true){ // A Heartbeat Was Found
-      medicoes++;
-          valores = valores + BPM;
-            // BPM and IBI have been Determined
-      serialOutputWhenBeatHappens(); // A Beat Happened, Output that to serial.
-            // Quantified Self "QS" true when arduino finds a heartbeat
-            fadeRate = 255; // Makes the LED Fade Effect Happen, Set 'fadeRate' Variable to 255 to fade LED with pulse
-            
-            QS = false; // reset the Quantified Self flag for next time
-          }
-          ledFadeToBeat(); // Makes the LED Fade Effect Happen 
-          delay(20); 
-      }
-    if(medicoes>0){
-    BPMtemp = (int)valores/medicoes;  
-    String estado = estadoBPM(usuNome,usuIdade,'M',BPMtemp);
-    Serial.println(usuNome+" Idade: "+usuIdade+" Sexo: "+usuSexo);
-    Serial.println(estado);
-    gravarBPM(1234, BPMtemp, estado, usuNome);
-    }else{
-      Serial.println("Nenhum batimento pressentido.");
-    }
-     
-
-  }
-  void medirFalsamenteGlicoseDoSangue(){
-  int tempoDeEspera = 30 * 1000;
-      long inicio; int resposta = 0;
-
-      Serial.println("");
-      Serial.println("Por favor, coloque a palma da mão sobre o Glicosimetro por 30 segundos");
-
-      inicio = millis();
-    Serial.println("Medindo...");
-      while(millis() - inicio < tempoDeEspera){
-      resposta = 42;
-          
-      }
-    if(resposta>42){
-    //BPMtemp = (int)valores/medicoes;  
-    String estado = estadoGlicose(usuNome,usuIdade,'S',156);
-    Serial.println(usuNome+" Idade: "+usuIdade);
-    Serial.println(estado);
-    gravarGlicose(1234,  estado, usuNome);
-    }else{
-      Serial.println("Não foi possível medir sua Glicose.");
-    }
-      
-  }
-
-  void ledFadeToBeat(){
-     fadeRate -= 15;                         //  set LED fade value
-     fadeRate = constrain(fadeRate,0,255);   //  keep LED fade value from going into negative numbers!
-     analogWrite(fadePin,fadeRate);          //  fade LED
-  }
-
   void interruptSetup(){
     // Initializes Timer2 to throw an interrupt every 2mS.
     TCCR2A = 0x02;     // DISABLE PWM ON DIGITAL PINS 3 AND 11, AND GO INTO CTC MODE
@@ -283,6 +61,59 @@
     OCR2A = 0X7C;      // SET THE TOP OF THE COUNT TO 124 FOR 500Hz SAMPLE RATE
     TIMSK2 = 0x02;     // ENABLE INTERRUPT ON MATCH BETWEEN TIMER2 AND OCR2A
     sei();             // MAKE SURE GLOBAL INTERRUPTS ARE ENABLED
+  }
+
+  void arduinoSerialMonitorVisual(char symbol, int data ){
+    const int sensorMin = 0;      // sensor minimum, discovered through experiment
+    const int sensorMax = 1024;    // sensor maximum, discovered through experiment
+    int sensorReading = data; // map the sensor range to a range of 12 options:
+    int range = map(sensorReading, sensorMin, sensorMax, 0, 11);
+    // do something different depending on the
+    // range value:
+   /** switch (range)
+    {
+    case 0:
+      Serial.println("");     /////ASCII Art Madness
+      break;
+    case 1:
+      Serial.println("---");
+      break;
+    case 2:
+      Serial.println("------");
+      break;
+    case 3:
+      Serial.println("---------");
+      break;
+    case 4:
+      Serial.println("------------");
+      break;
+    case 5:
+      Serial.println("--------------|-");
+      break;
+    case 6:
+      Serial.println("--------------|---");
+      break;
+    case 7:
+      Serial.println("--------------|-------");
+      break;
+    case 8:
+      Serial.println("--------------|----------");
+      break;
+    case 9:
+      Serial.println("--------------|----------------");
+      break;
+    case 10:
+      Serial.println("--------------|-------------------");
+      break;
+    case 11:
+      Serial.println("--------------|-----------------------");
+      break;
+    }*/
+  }
+
+  void sendDataToSerial(char symbol, int data ){
+     Serial.print(symbol);
+     Serial.println(data);
   }
 
   void serialOutput(){   // Decide How To Output Serial.
@@ -366,6 +197,170 @@
   }
 }
 
+  void historicoDeMedicoes(char GliBPM){
+    String arqNome = ("Gli"+usuNome+".txt");
+    chamarArquivo(arqNome);
+    
+    desinvocarArquivo();
+  }
+  
+  void verificarHistoricoDeMedicoes(){
+    Serial.println("Que vamos analisar hoje?");
+    Serial.println("00 - Batimentos Cardíacos");
+    Serial.println("01 - Glicose");
+    Serial.println("02 - Nada");
+    
+    String textin = "";
+    boolean escolha = true;
+    while(escolha){
+    if(Serial.available() > 0){
+            textin = "";
+            char letrin;
+
+            while(Serial.available() > 0){
+                letrin = Serial.read();
+                if(letrin != '\n'){
+                    textin.concat(letrin);
+                }
+                delay(10);
+            }
+
+        }
+    
+    if(textin == "00"){
+            Serial.println("Bora lá");
+            historicoDeMedicoes('B');
+        }else if(textin == "01"){
+            Serial.println("Vamo que vamo");
+            historicoDeMedicoes('G');
+        }else if(textin == "02"){
+            Serial.println("Vlw flw");
+      escolha = false;
+        }else
+            Serial.println("Qué qui tú qué?");
+    
+      
+    }
+    
+  }
+  
+  
+  void medirBatimentosCardiacos(){
+      int tempoDeEspera = 30 * 1000;
+      long inicio; int medicoes = 0; int valores = 0;
+    int BPMtemp = 0;
+
+      Serial.println("");
+      Serial.println("Por favor, encoste o dedo no medidor e aguarde 30 segundos");
+
+      inicio = millis();
+      while(millis() - inicio < tempoDeEspera){
+
+          if(millis() - inicio > 1000){
+
+          }
+          if (QS == true){ // A Heartbeat Was Found
+      medicoes++;
+          valores = valores + BPM;
+            // BPM and IBI have been Determined
+      serialOutputWhenBeatHappens(); // A Beat Happened, Output that to serial.
+            // Quantified Self "QS" true when arduino finds a heartbeat
+            fadeRate = 255; // Makes the LED Fade Effect Happen, Set 'fadeRate' Variable to 255 to fade LED with pulse
+            
+            QS = false; // reset the Quantified Self flag for next time
+          }
+          ledFadeToBeat(); // Makes the LED Fade Effect Happen 
+          delay(20); 
+      }
+    if(medicoes>0){
+    BPMtemp = (int)valores/medicoes;  
+    String estado = estadoBPM(usuNome,usuIdade,'M',BPMtemp);
+    Serial.println(usuNome+" Idade: "+usuIdade+" Sexo: "+usuSexo);
+    Serial.println(estado);
+    gravarBPM(1234, BPMtemp, estado, usuNome);
+    }else{
+      Serial.println("Nenhum batimento pressentido.");
+    }
+     
+
+  }
+  void medirFalsamenteGlicoseDoSangue(){
+  int tempoDeEspera = 30 * 1000;
+      long inicio; int resposta = 0;
+
+      Serial.println("");
+      Serial.println("Por favor, coloque a palma da mão sobre o Glicosimetro por 30 segundos");
+
+      inicio = millis();
+    Serial.println("Medindo...");
+      while(millis() - inicio < tempoDeEspera){
+      resposta = 42;
+          
+      }
+    if(resposta>42){
+    //BPMtemp = (int)valores/medicoes;  
+    String estado = estadoGlicose(usuNome,usuIdade,'S',156);
+    Serial.println(usuNome+" Idade: "+usuIdade);
+    Serial.println(estado);
+    gravarGlicose(1234,  estado, usuNome);
+    }else{
+      Serial.println("Não foi possível medir sua Glicose.");
+    }
+      
+  }
+  
+  void setup() { // Trá lá lá lá lá lá lá lá lá
+    
+    pinMode(blinkPin,OUTPUT);         // LED verde
+    pinMode(fadePin,OUTPUT);          // LED amarelo
+    Serial.begin(115200);             // we agree to talk fast!
+    interruptSetup();                 // sets up to read Pulse Sensor signal every 2mS
+                  // IF YOU ARE POWERING The Pulse Sensor AT VOLTAGE LESS THAN THE BOARD VOLTAGE,
+                  // UN-COMMENT THE NEXT LINE AND APPLY THAT VOLTAGE TO THE A-REF PIN
+                  //   analogReference(EXTERNAL);
+    //BT.begin(115200);
+  //Ligando o Aparelho
+    Serial.println("Olá. Sou C.O.X.I.N.H.A. seu assitente médico pessoal");
+    Serial.println("Que coisa incrível vamos fazer hoje?");
+
+  }
+  
+  //  É aqui que a mágica acontece
+  void loop() {
+    serialOutput();
+
+    String textin = "";
+    Serial.println("Zero - Abrir histórico de saúde");
+    Serial.println("Um - Verificar batimentos cardiacos");
+    Serial.println("Dois - Medir Glicose no sangue");
+ 
+        Serial.println("Recebido >"+textin+"<");  
+  
+  while(Serial.available() > 0){
+    textin = Serial.read();
+    if(Serial.read() == '\n'){
+      if(textin == "Zero"||textin == "zero"){
+        Serial.println("FATAL ERROR");
+        //verificarHistoricoDeMedicoes();
+      }else if(textin == "Um"||textin == "um"||textin == "*um#"){
+        Serial.println("Vamos ver se esse tumtumzinho está firme e forte.");
+        medirBatimentosCardiacos();
+      }else if(textin == "Dois"||textin == "dois"){
+        Serial.println("Será que sua glicose aumentou? Será que ela caiu?");
+        medirFalsamenteGlicoseDoSangue();
+      }else
+        Serial.println("Me desculpe, não compreendo o que deseja fazer.");
+    }
+  }
+       
+  }
+
+  void ledFadeToBeat(){
+     fadeRate -= 15;                         //  set LED fade value
+     fadeRate = constrain(fadeRate,0,255);   //  keep LED fade value from going into negative numbers!
+     analogWrite(fadePin,fadeRate);          //  fade LED
+  }
+  
   void gravarBPM(int senha, int BPMnovo, String estado, String nome){
   //Testar se o SD tá pronto para a labuta
   acordarSD();
@@ -490,61 +485,6 @@
     return estado;
   }
   
-  
-  void arduinoSerialMonitorVisual(char symbol, int data ){
-    const int sensorMin = 0;      // sensor minimum, discovered through experiment
-    const int sensorMax = 1024;    // sensor maximum, discovered through experiment
-    int sensorReading = data; // map the sensor range to a range of 12 options:
-    int range = map(sensorReading, sensorMin, sensorMax, 0, 11);
-    // do something different depending on the
-    // range value:
-   /** switch (range)
-    {
-    case 0:
-      Serial.println("");     /////ASCII Art Madness
-      break;
-    case 1:
-      Serial.println("---");
-      break;
-    case 2:
-      Serial.println("------");
-      break;
-    case 3:
-      Serial.println("---------");
-      break;
-    case 4:
-      Serial.println("------------");
-      break;
-    case 5:
-      Serial.println("--------------|-");
-      break;
-    case 6:
-      Serial.println("--------------|---");
-      break;
-    case 7:
-      Serial.println("--------------|-------");
-      break;
-    case 8:
-      Serial.println("--------------|----------");
-      break;
-    case 9:
-      Serial.println("--------------|----------------");
-      break;
-    case 10:
-      Serial.println("--------------|-------------------");
-      break;
-    case 11:
-      Serial.println("--------------|-----------------------");
-      break;
-    }*/
-  }
-
-
-  void sendDataToSerial(char symbol, int data ){
-     Serial.print(symbol);
-     Serial.println(data);
-  }
-
   ISR(TIMER2_COMPA_vect) {        //triggered when Timer2 counts to 124
     cli();                                      // disable interrupts while we do this
     Signal = analogRead(pulsePin);              // read the Pulse Sensor
