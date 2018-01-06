@@ -309,52 +309,7 @@
       
   }
   
-  void setup() { // Trá lá lá lá lá lá lá lá lá
-    
-    pinMode(blinkPin,OUTPUT);         // LED verde
-    pinMode(fadePin,OUTPUT);          // LED amarelo
-    Serial.begin(115200);             // we agree to talk fast!
-    interruptSetup();                 // sets up to read Pulse Sensor signal every 2mS
-                  // IF YOU ARE POWERING The Pulse Sensor AT VOLTAGE LESS THAN THE BOARD VOLTAGE,
-                  // UN-COMMENT THE NEXT LINE AND APPLY THAT VOLTAGE TO THE A-REF PIN
-                  //   analogReference(EXTERNAL);
-    //BT.begin(115200);
-  //Ligando o Aparelho
-    Serial.println("Olá. Sou C.O.X.I.N.H.A. seu assitente médico pessoal");
-    Serial.println("Que coisa incrível vamos fazer hoje?");
-
-  }
   
-  //  É aqui que a mágica acontece
-  void loop() {
-    serialOutput();
-
-    String textin = "";
-    Serial.println("Zero - Abrir histórico de saúde");
-    Serial.println("Um - Verificar batimentos cardiacos");
-    Serial.println("Dois - Medir Glicose no sangue");
- 
-        Serial.println("Recebido >"+textin+"<");  
-  
-  while(Serial.available() > 0){
-    textin = Serial.read();
-    if(Serial.read() == '\n'){
-      if(textin == "Zero"||textin == "zero"){
-        Serial.println("FATAL ERROR");
-        //verificarHistoricoDeMedicoes();
-      }else if(textin == "Um"||textin == "um"||textin == "*um#"){
-        Serial.println("Vamos ver se esse tumtumzinho está firme e forte.");
-        medirBatimentosCardiacos();
-      }else if(textin == "Dois"||textin == "dois"){
-        Serial.println("Será que sua glicose aumentou? Será que ela caiu?");
-        medirFalsamenteGlicoseDoSangue();
-      }else
-        Serial.println("Me desculpe, não compreendo o que deseja fazer.");
-    }
-  }
-       
-  }
-
   void ledFadeToBeat(){
      fadeRate -= 15;                         //  set LED fade value
      fadeRate = constrain(fadeRate,0,255);   //  keep LED fade value from going into negative numbers!
@@ -571,3 +526,63 @@
 
     sei();                                   // enable interrupts when youre done!
   }// end isr
+  
+  void setup() { // Trá lá lá lá lá lá lá lá lá
+    
+    pinMode(blinkPin,OUTPUT);         // LED verde
+    pinMode(fadePin,OUTPUT);          // LED amarelo
+    Serial.begin(115200);             // we agree to talk fast!
+    interruptSetup();                 // sets up to read Pulse Sensor signal every 2mS
+                  // IF YOU ARE POWERING The Pulse Sensor AT VOLTAGE LESS THAN THE BOARD VOLTAGE,
+                  // UN-COMMENT THE NEXT LINE AND APPLY THAT VOLTAGE TO THE A-REF PIN
+                  //   analogReference(EXTERNAL);
+    //BT.begin(115200);
+  //Ligando o Aparelho
+    Serial.println("Olá. Sou C.O.X.I.N.H.A.");
+	Serial.println("Seu assitente médico pessoal");
+    Serial.println("Que coisa incrível vamos fazer hoje?");
+
+  }
+  
+  //  É aqui que a mágica acontece
+  void loop() {
+    serialOutput();
+
+	if(!esperandoOpcao){
+		Serial.println("Zero - Abrir histórico de saúde");
+		Serial.println("Um - Verificar batimentos cardiacos");
+		Serial.println("Dois - Medir Glicose no sangue");
+		esperandoOpcao = true;
+	}
+    String textin = "";
+    
+	
+	while (Serial.available() > 0) {
+		char inChar = Serial.read();
+		textin += inChar;
+		delay(10);
+	}
+
+  
+	if (textin.length()>0) {
+		Serial.println("Recebido >"+textin+"<");
+		if(Serial.read() == '\n'){
+			if(textin == "Zero"||textin == "zero"){
+				Serial.println("FATAL ERROR");
+				//verificarHistoricoDeMedicoes();
+			}else if(textin == "Um"||textin == "um"||textin == "*um#"){
+				Serial.println("Vamos ver se esse tumtumzinho está firme e forte.");
+				medirBatimentosCardiacos();
+				esperandoOpcao = false;
+			}else if(textin == "Dois"||textin == "dois"){
+				Serial.println("Será que sua glicose aumentou? Será que ela caiu?");
+				medirFalsamenteGlicoseDoSangue();
+				esperandoOpcao = false;
+			}else
+				Serial.println("Me desculpe, não compreendo o que deseja fazer.");
+		}
+		
+	}
+       
+  }
+
