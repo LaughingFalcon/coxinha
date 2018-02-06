@@ -3,13 +3,6 @@
 #include <SoftwareSerial.h>
 
 //----------------------------------------------------------------------------
-// SESSAO: CODIGOS QUE LIDAM COM SD
-
-
-// FIM-SESSAO: CODIGOS QUE LIDAM COM SD
-//----------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------
 //SESSAO: MENU PRINCIPAL
 
 void exibirBoasVindasNoMonitorSerial()
@@ -60,7 +53,7 @@ void realizarOperacaoRequisitada(char operacaoEscolhida)
       break;
       case '2':
           Serial.println("Vamos ver se esse tumtumzinho está firme e forte?");
-          //medirBatimentosCardiacos();
+          medirBatimentosCardiacosCalculandoMedia();
       break;
       case '3':
           Serial.println("Será que sua glicose aumentou? Será que ela caiu?");
@@ -84,6 +77,7 @@ void setup() {
   Serial.begin(38400); // REPRESENTA O MONITOR SERIAL
   
   exibirBoasVindasNoMonitorSerial();
+  setupTimeInterruptionForPulseSensor();
 }
 
 void loop() {
