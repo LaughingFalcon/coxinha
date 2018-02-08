@@ -30,15 +30,21 @@ void aguardarEnvioDeDadosViaBluetooth(){
 
 char receberOpcaoDeMenuViaBluetooth()
 {
-  aguardarEnvioDeDadosViaBluetooth();
-  byte opcaoEscolhida;
-
-  while(Serial1.available())
-  {
-    opcaoEscolhida += Serial1.read();
-  }
+    aguardarEnvioDeDadosViaBluetooth();
+    byte opcaoEscolhida;
   
-  return char(opcaoEscolhida);
+    while(Serial1.available())
+    {
+      opcaoEscolhida += Serial1.read();
+    }
+    
+    return char(opcaoEscolhida);
+}
+
+char definirOpcaoDeMenuEscolhida(byte dadosDoAplicativo)
+{
+    String dadosRecebidos = String(dadosDoAplicativo);
+    
 }
 
 void realizarOperacaoRequisitada(char operacaoEscolhida)
@@ -85,7 +91,7 @@ void loop() {
     //definirTipoSaidaSerial();
 
   exibirMenuPrincipalNoMonitorSerial();
-
-  char opcaoEscolhida = receberOpcaoDeMenuViaBluetooth();
+  
+  char opcaoEscolhida =  receberOpcaoDeMenuViaBluetooth();  
   realizarOperacaoRequisitada(opcaoEscolhida);
 }

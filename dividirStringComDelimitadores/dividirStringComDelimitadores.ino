@@ -14,7 +14,7 @@ void printEachItemFromInput(char* command)
         inicio[index] = command[index];
         index++;
     }
-    while(command[index] != NULL);
+    while(command[index] != NULL && command[index] != '\r'  && command[index] != '\n'  && command[index] != "\n\r");
 
     inicio[index] = 0x00;
 
@@ -23,12 +23,48 @@ void printEachItemFromInput(char* command)
     Serial.println("---> Comando Concatenado: " + concatenado);
 }
 
+bool listHasElementAtIndex(char* list, int index){
+    return list[index] != NULL && list[index] != '\r'  && list[index] != '\n'  && list[index] != "\n\r";
+}
+
+int numberOfCharactersInCharList(char* list)
+{
+    int index = 0;
+    
+    while(listHasElementAtIndex(list, index))
+      index++;
+
+    return index;
+}
+
 void separateInputByCharacter(char input, char** commands){
     *commands = strtok(input, "&");
 }
 
 void findNextToken(char** commands){
     *commands = strtok(NULL,"&");
+}
+
+void definirVariaveisDoInputInicial(char* command, int variableOrder)
+{
+    int numberOfCharacters = numberOfCharactersInCharList(command);
+
+    switch(variableOrder)
+    {
+        case 0:
+            
+          break;
+
+        case 1:
+
+          break;
+
+        case 2:
+
+          break;
+
+        default: Serial.println("Só são aceitáveis até quatro variaveis na comunicação inicial");
+    }
 }
 
 void separateInputInAnArray()
@@ -51,6 +87,10 @@ void separateInputInAnArray()
 
     for(int index = 0; index < maxLength; index++)
     {
+        int quantidade = numberOfCharactersInCharList(commands);
+
+        Serial.println("Quantidade: " + String(quantidade));
+      
         printEachItemFromInput(commands);      
         findNextToken(&commands);
 
@@ -67,6 +107,41 @@ int occurrencesOfCharacterInText(String text, char character)
           occurrences++;
     }
     return occurrences;
+}
+
+void separateStringByDelimiter(String fullString, char separator)
+{
+    Serial.println("Texto completo: " + fullString);
+  
+    int found = 0;
+    int strIndex[] = { 0, -1 };
+    int maxIndex = fullString.length() - 1;
+
+    String response[occurrencesOfCharacterInText(fullString, separator)];
+    int separatorFound = 0;
+    char commands;
+
+    for (int i = 0; i <= maxIndex; i++) 
+    {
+        commands = commands + fullString.charAt(i);
+
+        Serial.println("Caracter que estamos lendo: " + String(fullString.charAt(i)));
+
+        
+        Serial.println("Variavel Commands: ");
+        Serial.println(commands);
+      
+        if (fullString.charAt(i) == separator || i == maxIndex) 
+        {
+            separatorFound++;
+            response[separatorFound - 1] = String(commands);
+          
+            found++;
+            strIndex[0] = strIndex[1] + 1;
+            strIndex[1] = (i == maxIndex) ? i+1 : i;
+        }
+    }
+    //return found > index ? data.substring(strIndex[0], strIndex[1]) : "";  
 }
 
 void executeSecondWay()
